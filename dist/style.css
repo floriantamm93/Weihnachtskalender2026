@@ -93,3 +93,64 @@ dialog{max-width:480px;width:calc(100% - 32px);padding:48px 36px 32px;border:1px
   .letter, .voucher { padding: 20px; }
   .reveal-gallery { grid-template-columns: 1fr; }
 }
+
+/* Aufziehbare Spieluhr */
+#door-dialog[data-type="audio"] {
+  background: radial-gradient(ellipse at 50% 45%, #38213e, #191b28 70%);
+  border-color: #a998b6;
+}
+#door-dialog[data-type="audio"] .dialog-star { display: none; }
+#door-dialog[data-type="audio"] h2 { color: #f2deef; }
+.wind-button {
+  position: relative;
+  perspective: 800px;
+  display: block;
+  width: min(100%, 330px);
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  background: radial-gradient(ellipse, rgb(172 111 214 / .12), transparent 68%);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.wind-button:disabled { cursor: default; }
+.music-box-art {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  filter: drop-shadow(0 12px 15px #0008);
+}
+
+/* Zwei Ausschnitte desselben Motivs trennen Schlüssel und Gehäuse.
+   Die Drehachse liegt auf dem waagerechten Schaft des Schlüssels. */
+.music-box-art {
+  clip-path: polygon(0 0, 100% 0, 100% 59%, 80% 59%, 80% 73%, 100% 73%, 100% 100%, 0 100%);
+}
+.music-box-key {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: auto;
+  clip-path: inset(59% 7% 27% 80%);
+  transform-origin: 80% 66.2%;
+  transition: transform 380ms ease-out;
+  user-select: none;
+  pointer-events: none;
+}
+.is-playing .music-box-art { animation: music-box-glow 3s ease-in-out infinite alternate; }
+.wind-instruction, .wind-status { font-size: .95rem; color: #ded0e4; line-height: 1.6; }
+.wind-status:empty { display: none; }
+.audio-title { color: #ecd7ef; font-family: Georgia, serif; font-size: 1.15rem; }
+.music-box-audio { display: block; width: 100%; margin-top: 16px; }
+@keyframes music-box-glow {
+  from { filter: drop-shadow(0 0 8px #b279cc44); }
+  to { filter: drop-shadow(0 0 22px #b279cc88); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-playing .music-box-art { animation: none; }
+}
+@media (max-width: 560px) {
+  .wind-button { width: min(100%, 260px); }
+}

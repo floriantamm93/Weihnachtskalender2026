@@ -28,5 +28,7 @@ await mkdir('dist',{recursive:true});
 await writeFile('dist/calendar.enc.json',bundle);
 await writeFile('index.html',html);
 for (const file of ['index.html','style.css','app.js']) await copyFile(file,'dist/' + file);
+await mkdir('dist/assets',{recursive:true});
+await copyFile('assets/gothic-music-box.png','dist/assets/gothic-music-box.png');
 await writeFile('dist/.nojekyll','');
 console.log('Kalender mit 24 verschlüsselten Türchen in dist erstellt.');

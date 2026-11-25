@@ -115,9 +115,13 @@
   },
   {
     "day": 7,
-    "type": "text",
-    "title": "Hier wächst eine kleine Überraschung",
-    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+    "type": "audio",
+    "title": "Ein Song für dich",
+    "text": "[Hier eintragen, warum dich dieser Song an Chantal erinnert.]",
+    "audio": {
+      "src": "",
+      "title": "[Songtitel und Interpret]"
+    }
   },
   {
     "day": 8,
@@ -139,9 +143,13 @@
   },
   {
     "day": 11,
-    "type": "text",
-    "title": "Hier wächst eine kleine Überraschung",
-    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+    "type": "audio",
+    "title": "Eine Nachricht nur für dich",
+    "text": "[Hier eine persönliche Einleitung zu deiner Sprachnachricht ergänzen.]",
+    "audio": {
+      "src": "",
+      "title": "Eine Sprachnachricht von mir"
+    }
   },
   {
     "day": 12,

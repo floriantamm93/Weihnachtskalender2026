@@ -92,6 +92,7 @@ function renderDoorContent(item) {
     if (item.voucher.note) voucher.append(element('p', 'voucher-note', item.voucher.note));
     container.append(voucher);
   }
+  if (type === 'audio') renderMusicBox(container, item);
   if (type === 'quiz') renderQuiz(container, item);
   if (type === 'gallery') renderGallery(container, item.photos);
 }
@@ -183,8 +184,87 @@ function renderGallery(container, photos) {
   container.append(progress, gallery);
 }
 
-function openDoor(day) {
+function clearDoorContent() {
+  for (const audio of $('door-content').querySelectorAll('audio')) {
+    audio.pause();
+    audio.removeAttribute('src');
+    audio.load();
+  }
   $('door-content').replaceChildren();
+}
+function renderMusicBox(container, item) {
+  let turns = 0;
+  const box = element('section', 'music-box');
+  const wind = element('button', 'wind-button');
+  wind.type = 'button';
+  wind.setAttribute('aria-label', 'Spieluhr aufziehen');
+  const artwork = element('img', 'music-box-art');
+  artwork.src = './assets/gothic-music-box.png';
+  artwork.alt = 'Silberne Spieluhr mit Rosenornamenten, violettem Samt und Aufziehschlüssel';
+  artwork.draggable = false;
+  const key = element('img', 'music-box-key');
+  key.src = artwork.src;
+  key.alt = '';
+  key.setAttribute('aria-hidden', 'true');
+  key.draggable = false;
+  wind.append(artwork, key);
+  const instruction = element('p', 'wind-instruction', 'Klicke auf die Spieluhr, um sie aufzuziehen.');
+  const status = element('p', 'wind-status');
+  status.setAttribute('role', 'status');
+  const audio = element('audio', 'music-box-audio');
+  audio.preload = 'none';
+  audio.controls = true;
+  audio.hidden = true;
+  audio.setAttribute('aria-label', item.audio.title);
+  if (item.audio.src) audio.src = item.audio.src;
+  const title = element('p', 'audio-title', item.audio.title);
+  title.hidden = true;
+  function updatePlayback() {
+    box.classList.toggle('is-playing', !audio.paused && !audio.ended);
+  }
+  audio.addEventListener('play', () => {
+    updatePlayback();
+    status.textContent = 'Die Spieluhr spielt für dich. ♡';
+  });
+  audio.addEventListener('pause', updatePlayback);
+  audio.addEventListener('ended', () => {
+    updatePlayback();
+    status.textContent = 'Du kannst den Ton über den Player noch einmal anhören.';
+  });
+  audio.addEventListener('error', () => {
+    if (!audio.isConnected || !audio.hasAttribute('src')) return;
+    box.classList.remove('is-playing');
+    status.textContent = 'Diese Audiodatei konnte nicht abgespielt werden. Bitte versuche eine andere Datei oder ein anderes Audioformat.';
+  });
+  wind.addEventListener('click', () => {
+    if (turns >= 10) return;
+    turns++;
+    // Die zweite Bildebene zeigt ausschließlich den Schlüssel.
+    key.style.transform = 'rotateX(' + turns * 180 + 'deg)';
+    if (turns < 10) return;
+    wind.disabled = true;
+    instruction.textContent = 'Ganz aufgezogen.';
+    if (!item.audio.src) {
+      status.textContent = 'Die Spieluhr ist bereit. Dein Sound wird hier noch ergänzt.';
+      return;
+    }
+    audio.hidden = false;
+    title.hidden = false;
+    // play() bleibt direkt im Klick-Ereignis, damit mobile Browser den Start erlauben.
+    audio.play().catch(error => {
+      if (audio.isConnected && audio.hasAttribute('src')) {
+        status.textContent = error.name === 'NotAllowedError'
+          ? 'Drücke im Player auf Play, um deinen Sound zu starten.'
+          : 'Diese Audiodatei konnte nicht abgespielt werden. Bitte prüfe Datei und Audioformat.';
+      }
+    });
+  });
+  box.append(wind, instruction, status, title, audio);
+  container.append(box);
+}
+
+function openDoor(day) {
+  clearDoorContent();
   $('door-text').hidden = false;
   delete $('door-dialog').dataset.type;
   $('door-date').textContent = day + '. DEZEMBER';
@@ -250,7 +330,7 @@ $('login-form').addEventListener('submit', async event => {
 });
 $('logout').addEventListener('click', () => {
   contents = null;
-  $('door-content').replaceChildren();
+  clearDoorContent();
   $('doors').replaceChildren();
   $('door-title').textContent = '';
   $('door-text').textContent = '';
@@ -265,7 +345,7 @@ function closeDoor() {
   document.querySelector('[data-day="' + day + '"]')?.focus();
 }
 $('door-dialog').addEventListener('close', () => {
-  $('door-content').replaceChildren();
+  clearDoorContent();
   $('door-text').textContent = '';
 });
 $('close-dialog').addEventListener('click',closeDoor);

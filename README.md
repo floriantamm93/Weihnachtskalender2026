@@ -1,6 +1,6 @@
 # Chantals Adventskalender
 
-Statische Website für Dezember 2026 mit verschlüsselten Inhalten. Türchen 1–6 sind zum Befüllen vorbereitet, Türchen 7–24 enthalten allgemeine Platzhalter.
+Statische Website für Dezember 2026 mit verschlüsselten Inhalten. Türchen 1–6 sowie die Sound-Türchen 7 und 11 sind zum Befüllen vorbereitet. Die übrigen Türchen enthalten allgemeine Platzhalter.
 
 ## Inhalte ergänzen
 
@@ -14,6 +14,8 @@ Bearbeite `content.local.json` im Projektordner. Die Datei wurde bereits mit den
 | 4 | Persönlicher Brief | `greeting`, `text`, `signature` |
 | 5 | Quiz mit drei Fragen | `questions`, `completionText` |
 | 6 | Galerie mit fünf Bildern | `text`, fünf Einträge in `photos` |
+| 7 | Song mit Spieluhr | `text`, `audio.src`, `audio.title` |
+| 11 | Sprachnachricht mit Spieluhr | `text`, `audio.src`, `audio.title` |
 
 `title` ist jeweils die Überschrift im geöffneten Türchen. Eckige Klammern in den Texten markieren Stellen zum Ersetzen. Für Absätze innerhalb eines JSON-Textes `\n\n` verwenden. Die Nummern `day` von 1 bis 24 beibehalten.
 
@@ -23,6 +25,14 @@ Lege Bilder in `private-media/` ab. Unterstützt werden JPG, PNG, GIF und WebP. 
 
 Die Galerie hat genau fünf Bildplätze. Jedes Bild lässt sich einzeln aufdecken und verbergen. Beim Schließen des Türchens werden alle wieder verborgen.
 
+### Spieluhren und Sounds
+
+Für Türchen 7 und 11 eine MP3-, WAV-, OGG- oder M4A-Datei in `private-media/` ablegen. In `audio.src` den relativen Dateinamen eintragen, beispielsweise `song.mp3` oder `sprachnachricht.m4a`. `audio.title` ist der Titel beim Abspielen. Ein leeres `src` lässt die Spieluhr mit Platzhalter ausprobieren. MP3 eignet sich gut für kompakte Dateien und breite Browserunterstützung.
+
+Zehn Klicks auf die Spieluhr starten den Sound. Jeder Klick dreht ausschließlich den Schlüssel. Die benötigte Klickzahl und der Fortschritt werden in der Oberfläche verborgen. Enter und Leertaste funktionieren ebenfalls. Danach stehen Pause, Lautstärke und Fortschritt im Audioplayer zur Verfügung. Falls der Browser den automatischen Start verhindert, lässt sich die Wiedergabe dort manuell starten. Beim Schließen stoppt der Sound. Jedes erneute Öffnen beginnt bei null Umdrehungen.
+
+Audiodateien werden beim Bauen zusammen mit den übrigen Inhalten verschlüsselt. Das dekorative Spieluhrmotiv liegt in `assets/gothic-music-box.png`.
+
 ### Quiz und Gutschein
 
 Jede der drei Quizfragen hat eine `question`, eine Liste `answers`, eine `correctAnswer` und eine `explanation`. Die Antworten werden ab null gezählt. Bei drei Antworten steht `0` für die erste, `1` für die zweite und `2` für die dritte. `completionText` erscheint nach der letzten Frage.
@@ -31,7 +41,7 @@ Das Quiz startet bei jedem Öffnen neu. Der Gutschein zeigt deine Konditionen an
 
 ## Bauen
 
-Nach Änderungen an Texten oder Bildern den Kalender mit dem vereinbarten Passwort neu bauen. Node.js wird benötigt, zusätzliche Pakete sind nicht erforderlich.
+Nach Änderungen an Texten, Bildern oder Audiodateien den Kalender mit dem vereinbarten Passwort neu bauen. Node.js wird benötigt, zusätzliche Pakete sind nicht erforderlich.
 
 ```powershell
 $secret = Read-Host 'Kalender-Passwort' -AsSecureString
@@ -39,7 +49,7 @@ $env:CALENDAR_PASSWORD = [System.Net.NetworkCredential]::new('', $secret).Passwo
 try { npm run build } finally { Remove-Item Env:CALENDAR_PASSWORD }
 ```
 
-Der Build prüft die Inhalte und liest die Bilder ein. Texte und Bilder werden gemeinsam verschlüsselt und in die `index.html` sowie in `dist/` geschrieben. Ungültige Quizantworten, fehlende Bilddateien oder nicht unterstützte Formate brechen den Build mit einer Fehlermeldung ab. Wenn `content.local.json` fehlt, verwendet der Build die Beispieldatei.
+Der Build prüft die Inhalte und liest die Mediendateien ein. Texte, Bilder und Audiodateien werden gemeinsam verschlüsselt und in die `index.html` sowie in `dist/` geschrieben. Ungültige Quizantworten, fehlende Bilddateien oder nicht unterstützte Formate brechen den Build mit einer Fehlermeldung ab. Wenn `content.local.json` fehlt, verwendet der Build die Beispieldatei.
 
 ## Lokal ansehen
 
@@ -59,7 +69,7 @@ Das Repository veröffentlicht den Branch `codex/adventskalender` aus dem Stammo
 
 ## Verschlüsselung und Verhalten
 
-Texte und Bilder werden mit AES-256-GCM verschlüsselt. PBKDF2-SHA-256 mit 600.000 Iterationen und zufälligem Salt leitet den Schlüssel aus dem Passwort ab. Nach Neuladen wird das Passwort erneut benötigt.
+Texte, Bilder und Audiodateien werden mit AES-256-GCM verschlüsselt. PBKDF2-SHA-256 mit 600.000 Iterationen und zufälligem Salt leitet den Schlüssel aus dem Passwort ab. Nach Neuladen wird das Passwort erneut benötigt.
 
 Die Datumssperre ist eine Komfortfunktion im Browser. Wer das Passwort besitzt, kann alle Inhalte technisch vorzeitig entschlüsseln oder den Vorschauparameter verwenden. Eine manipulationssichere Freigabe nach Datum benötigt einen Server oder tägliche Veröffentlichung.
 

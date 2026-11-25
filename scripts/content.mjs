@@ -1,23 +1,43 @@
 import {readFile, realpath} from 'node:fs/promises';
 import path from 'node:path';
 
-const types = new Set(['text', 'letter', 'photo', 'voucher', 'quiz', 'gallery']);
+const types = new Set(['text', 'letter', 'photo', 'voucher', 'quiz', 'gallery', 'audio']);
 function requireText(value, label) {
   if (typeof value !== 'string') throw new Error(label + ' muss ein Text sein.');
 }
+async function readPrivateMedia(source, mediaRoot) {
+  const root = await realpath(mediaRoot);
+  const file = await realpath(path.resolve(mediaRoot, source));
+  const relative = path.relative(root, file);
+  if (relative.startsWith('..' + path.sep) || relative === '..' || path.isAbsolute(relative)) {
+    throw new Error('Mediendateien müssen im Ordner private-media liegen.');
+  }
+  const bytes = await readFile(file);
+  return bytes;
+}
+async function prepareAudio(audio, mediaRoot) {
+  if (!audio || typeof audio !== 'object') throw new Error('Audio benötigt src und title.');
+  requireText(audio.src, 'Audio src');
+  requireText(audio.title, 'Audio title');
+  if (!audio.src) return {src:'', title:audio.title};
+  const bytes = await readPrivateMedia(audio.src, mediaRoot);
+  let mime;
+  const extension = path.extname(audio.src).toLowerCase();
+  if (extension === '.mp3' && (bytes.toString('ascii',0,3) === 'ID3' || (bytes[0] === 255 && (bytes[1] & 224) === 224))) mime = 'audio/mpeg';
+  else if (extension === '.wav' && bytes.toString('ascii',0,4) === 'RIFF' && bytes.toString('ascii',8,12) === 'WAVE') mime = 'audio/wav';
+  else if (extension === '.ogg' && bytes.toString('ascii',0,4) === 'OggS') mime = 'audio/ogg';
+  else if (extension === '.m4a' && bytes.toString('ascii',4,8) === 'ftyp') mime = 'audio/mp4';
+  if (!mime) throw new Error('Unterstützte Audioformate sind MP3, WAV, OGG und M4A. Dateiendung und Dateiinhalt müssen zusammenpassen.');
+  return {src:'data:' + mime + ';base64,' + bytes.toString('base64'), title:audio.title};
+}
+
 async function preparePhoto(photo, imageRoot) {
   if (!photo || typeof photo !== 'object') throw new Error('Für jedes Foto wird ein Objekt mit src, alt und caption benötigt.');
   requireText(photo.src, 'Foto src');
   requireText(photo.alt, 'Foto alt');
   requireText(photo.caption, 'Foto caption');
   if (!photo.src) return {src:'', alt:photo.alt, caption:photo.caption};
-  const root = await realpath(imageRoot);
-  const file = await realpath(path.resolve(imageRoot, photo.src));
-  const relative = path.relative(root, file);
-  if (relative.startsWith('..' + path.sep) || relative === '..' || path.isAbsolute(relative)) {
-    throw new Error('Bilder müssen im Ordner private-media liegen.');
-  }
-  const bytes = await readFile(file);
+  const bytes = await readPrivateMedia(photo.src, imageRoot);
   let mime;
   if (bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))) mime = 'image/png';
   else if (bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255) mime = 'image/jpeg';
@@ -45,6 +65,7 @@ export async function prepareContent(content, imageRoot = path.resolve('private-
       door.greeting = item.greeting;
       door.signature = item.signature;
     }
+    if (type === 'audio') door.audio = await prepareAudio(item.audio, imageRoot);
     if (type === 'photo') door.image = await preparePhoto(item.image, imageRoot);
     if (type === 'gallery') {
       if (!Array.isArray(item.photos) || item.photos.length !== 5) throw new Error('Die Galerie benötigt genau fünf Fotos.');
