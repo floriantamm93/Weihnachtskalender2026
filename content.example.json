@@ -1,0 +1,224 @@
+[
+  {
+    "day": 1,
+    "type": "letter",
+    "title": "Ein Brief zum Anfang",
+    "text": "[Hier deinen Brief einfügen: Warum hast du den Kalender gemacht und worauf freust du dich im Dezember mit Chantal?]",
+    "greeting": "Liebe Chantal,",
+    "signature": "Dein Florian"
+  },
+  {
+    "day": 2,
+    "type": "photo",
+    "title": "Weißt du noch?",
+    "text": "[Hier eure gemeinsame Erinnerung und das kleine Detail eintragen, das dir im Gedächtnis geblieben ist.]",
+    "image": {
+      "src": "",
+      "alt": "Ein gemeinsamer Moment mit Chantal",
+      "caption": "[Ort oder Datum eurer Erinnerung]"
+    }
+  },
+  {
+    "day": 3,
+    "type": "voucher",
+    "title": "Du hast die Fernbedienung",
+    "text": "Ein Gutschein für einen gemeinsamen Filmabend. Du bestimmst Film und Snacks, ich kümmere mich um den Rest.",
+    "voucher": {
+      "headline": "Ein Filmabend mit mir",
+      "details": [
+        "Dein Wunschfilm",
+        "Deine Lieblingssnacks",
+        "Ein Abend nur für uns"
+      ],
+      "note": "[Hier ergänzen, wie ihr den Gutschein einlösen möchtet.]"
+    }
+  },
+  {
+    "day": 4,
+    "type": "letter",
+    "title": "Mein Lieblingsdetail an dir",
+    "text": "[Welche kleine Eigenheit von Chantal findest du besonders süß? Erzähle hier von einer passenden Erinnerung.]",
+    "greeting": "Weißt du, was ich an dir liebe?",
+    "signature": "♡"
+  },
+  {
+    "day": 5,
+    "type": "quiz",
+    "title": "Das offizielle Chantal-Quiz",
+    "text": "Drei Fragen über uns. Mal sehen, woran du dich erinnerst …",
+    "questions": [
+      {
+        "question": "[Hier Frage 1 über euch eintragen]",
+        "answers": [
+          "[Antwort A]",
+          "[Antwort B]",
+          "[Eine absurde Antwort]"
+        ],
+        "correctAnswer": 0,
+        "explanation": "[Hier die Auflösung, einen Insider oder eine kleine Überraschung ergänzen.]"
+      },
+      {
+        "question": "[Hier Frage 2 über euch eintragen]",
+        "answers": [
+          "[Antwort A]",
+          "[Antwort B]",
+          "[Eine absurde Antwort]"
+        ],
+        "correctAnswer": 0,
+        "explanation": "[Hier die Auflösung, einen Insider oder eine kleine Überraschung ergänzen.]"
+      },
+      {
+        "question": "[Hier Frage 3 über euch eintragen]",
+        "answers": [
+          "[Antwort A]",
+          "[Antwort B]",
+          "[Eine absurde Antwort]"
+        ],
+        "correctAnswer": 0,
+        "explanation": "[Hier die Auflösung, einen Insider oder eine kleine Überraschung ergänzen.]"
+      }
+    ],
+    "completionText": "[Hier deine Nachricht nach dem Quiz eintragen.]"
+  },
+  {
+    "day": 6,
+    "type": "gallery",
+    "title": "Nikolaus – Warst du artig genug? 😏",
+    "text": "Fünf kleine Überraschungen für dich. Du kannst jedes Bild einzeln aufdecken und wieder verbergen.",
+    "photos": [
+      {
+        "src": "",
+        "alt": "Foto 1 für Chantal",
+        "caption": ""
+      },
+      {
+        "src": "",
+        "alt": "Foto 2 für Chantal",
+        "caption": ""
+      },
+      {
+        "src": "",
+        "alt": "Foto 3 für Chantal",
+        "caption": ""
+      },
+      {
+        "src": "",
+        "alt": "Foto 4 für Chantal",
+        "caption": ""
+      },
+      {
+        "src": "",
+        "alt": "Foto 5 für Chantal",
+        "caption": ""
+      }
+    ]
+  },
+  {
+    "day": 7,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 8,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 9,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 10,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 11,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 12,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 13,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 14,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 15,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 16,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 17,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 18,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 19,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 20,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 21,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 22,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 23,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  },
+  {
+    "day": 24,
+    "type": "text",
+    "title": "Hier wächst eine kleine Überraschung",
+    "text": "Dieses Türchen wird noch mit Liebe gefüllt. Bald wartet hier etwas ganz Persönliches auf dich, Chantal. ♡"
+  }
+]

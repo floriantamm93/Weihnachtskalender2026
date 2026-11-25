@@ -50,7 +50,143 @@ function renderCalendar() {
     $('doors').append(button);
   }
 }
+function element(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text) node.textContent = text;
+  return node;
+}
+function appendPhoto(parent, photo) {
+  const figure = element('figure', 'memory-photo');
+  if (photo.src) {
+    const image = element('img');
+    image.src = photo.src;
+    image.alt = photo.alt || '';
+    figure.append(image);
+  } else {
+    figure.append(element('p', 'photo-placeholder', 'Hier findet bald ein Foto seinen Platz. ♡'));
+  }
+  if (photo.caption) figure.append(element('figcaption', '', photo.caption));
+  parent.append(figure);
+}
+function renderDoorContent(item) {
+  const container = $('door-content');
+  const type = item.type || 'text';
+  $('door-dialog').dataset.type = type;
+  if (type === 'letter') {
+    const letter = element('div', 'letter');
+    if (item.greeting) letter.append(element('p', 'letter-greeting', item.greeting));
+    letter.append(element('p', 'letter-body', item.text));
+    if (item.signature) letter.append(element('p', 'letter-signature', item.signature));
+    container.append(letter);
+    $('door-text').hidden = true;
+  }
+  if (type === 'photo') appendPhoto(container, item.image);
+  if (type === 'voucher') {
+    const voucher = element('section', 'voucher');
+    voucher.append(element('p', 'eyebrow', 'DEIN GUTSCHEIN'));
+    voucher.append(element('h3', '', item.voucher.headline));
+    const details = element('ul', 'voucher-details');
+    for (const detail of item.voucher.details) details.append(element('li', '', detail));
+    voucher.append(details);
+    if (item.voucher.note) voucher.append(element('p', 'voucher-note', item.voucher.note));
+    container.append(voucher);
+  }
+  if (type === 'quiz') renderQuiz(container, item);
+  if (type === 'gallery') renderGallery(container, item.photos);
+}
+function renderQuiz(container, item) {
+  let questionIndex = 0;
+  let score = 0;
+  const quiz = element('section', 'quiz');
+  container.append(quiz);
+  function showQuestion() {
+    quiz.replaceChildren();
+    const question = item.questions[questionIndex];
+    quiz.append(element('p', 'quiz-progress', 'Frage ' + (questionIndex + 1) + ' von ' + item.questions.length));
+    const heading = element('h3', '', question.question);
+    heading.tabIndex = -1;
+    quiz.append(heading);
+    const answers = element('div', 'quiz-answers');
+    const feedback = element('p', 'quiz-feedback');
+    feedback.setAttribute('role', 'status');
+    const next = element('button', 'primary', questionIndex === item.questions.length - 1 ? 'Ergebnis ansehen' : 'Nächste Frage');
+    next.type = 'button';
+    next.hidden = true;
+    question.answers.forEach((answer, index) => {
+      const button = element('button', 'answer-button', answer);
+      button.type = 'button';
+      button.addEventListener('click', () => {
+        for (const option of answers.children) option.disabled = true;
+        const correct = index === question.correctAnswer;
+        if (correct) score++;
+        answers.children[question.correctAnswer].classList.add('correct-answer');
+        button.classList.add('selected-answer');
+        feedback.textContent = (correct ? 'Richtig! ' : 'Die richtige Antwort ist „' + question.answers[question.correctAnswer] + '“. ') + question.explanation;
+        next.hidden = false;
+      });
+      answers.append(button);
+    });
+    next.addEventListener('click', () => {
+      questionIndex++;
+      if (questionIndex < item.questions.length) {
+        showQuestion();
+        return;
+      }
+      quiz.replaceChildren();
+      const result = element('h3', '', score + ' von ' + item.questions.length + ' richtig');
+      result.tabIndex = -1;
+      quiz.append(result, element('p', 'quiz-completion', item.completionText));
+      const restart = element('button', 'secondary-button', 'Noch einmal spielen');
+      restart.type = 'button';
+      restart.addEventListener('click', () => {
+        questionIndex = 0;
+        score = 0;
+        showQuestion();
+      });
+      quiz.append(restart);
+      result.focus();
+    });
+    quiz.append(answers, feedback, next);
+    if ($('door-dialog').open) heading.focus();
+  }
+  showQuestion();
+}
+function renderGallery(container, photos) {
+  const progress = element('p', 'gallery-progress', '0 von ' + photos.length + ' Bildern aufgedeckt');
+  progress.setAttribute('role', 'status');
+  const gallery = element('div', 'reveal-gallery');
+  let revealedCount = 0;
+  photos.forEach((photo, index) => {
+    const card = element('section', 'reveal-card');
+    const button = element('button', 'reveal-button', 'Bild ' + (index + 1) + ' aufdecken');
+    button.type = 'button';
+    button.setAttribute('aria-expanded', 'false');
+    const content = element('div', 'revealed-photo');
+    content.id = 'gallery-photo-' + index;
+    content.hidden = true;
+    button.setAttribute('aria-controls', content.id);
+    let revealed = false;
+    button.addEventListener('click', () => {
+      revealed = !revealed;
+      revealedCount += revealed ? 1 : -1;
+      content.replaceChildren();
+      if (revealed) appendPhoto(content, photo);
+      content.hidden = !revealed;
+      button.textContent = 'Bild ' + (index + 1) + (revealed ? ' verbergen' : ' aufdecken');
+      button.setAttribute('aria-expanded', String(revealed));
+      progress.textContent = revealedCount + ' von ' + photos.length + ' Bildern aufgedeckt';
+    });
+    card.append(button, content);
+    gallery.append(card);
+  });
+  container.append(progress, gallery);
+}
+
 function openDoor(day) {
+  $('door-content').replaceChildren();
+  $('door-text').hidden = false;
+  delete $('door-dialog').dataset.type;
   $('door-date').textContent = day + '. DEZEMBER';
   if (!available(day)) {
     $('door-title').textContent = 'Ein bisschen Vorfreude …';
@@ -59,6 +195,7 @@ function openDoor(day) {
     const item = contents.find(item => item.day === day);
     $('door-title').textContent = item.title;
     $('door-text').textContent = item.text;
+    renderDoorContent(item);
     opened.add(day);
     try { localStorage.setItem(storageKey, JSON.stringify([...opened])); } catch {}
     renderCalendar();
@@ -113,6 +250,7 @@ $('login-form').addEventListener('submit', async event => {
 });
 $('logout').addEventListener('click', () => {
   contents = null;
+  $('door-content').replaceChildren();
   $('doors').replaceChildren();
   $('door-title').textContent = '';
   $('door-text').textContent = '';
@@ -126,6 +264,10 @@ function closeDoor() {
   $('door-dialog').close();
   document.querySelector('[data-day="' + day + '"]')?.focus();
 }
+$('door-dialog').addEventListener('close', () => {
+  $('door-content').replaceChildren();
+  $('door-text').textContent = '';
+});
 $('close-dialog').addEventListener('click',closeDoor);
 $('back-calendar').addEventListener('click',closeDoor);
 $('door-dialog').addEventListener('click', event => { if (event.target === $('door-dialog') && (event.clientX < event.target.getBoundingClientRect().left || event.clientX > event.target.getBoundingClientRect().right || event.clientY < event.target.getBoundingClientRect().top || event.clientY > event.target.getBoundingClientRect().bottom)) closeDoor(); });

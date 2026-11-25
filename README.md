@@ -1,32 +1,37 @@
 # Chantals Adventskalender
 
-Statische Website für GitHub Pages, mit Passwort-Einstieg und 24 Türchen für Dezember 2026. Alle Türchen enthalten zunächst Platzhalter.
+Statische Website für Dezember 2026 mit verschlüsselten Inhalten. Türchen 1–6 sind zum Befüllen vorbereitet, Türchen 7–24 enthalten allgemeine Platzhalter.
 
-## Lokal ansehen
+## Inhalte ergänzen
 
-Die fertig gebaute index.html im Projektordner oder in dist lässt sich direkt per Doppelklick öffnen. JavaScript und verschlüsselte Inhalte funktionieren auch als lokale Datei.
+Bearbeite `content.local.json` im Projektordner. Die Datei wurde bereits mit den Vorlagen angelegt und ist von Git ausgeschlossen. Auf einem neuen Rechner zunächst `content.example.json` nach `content.local.json` kopieren. Die Beispieldatei enthält die öffentlichen Platzhalter.
 
-Optional steht ein Vorschau-Server bereit. Dafür wird Node.js benötigt. Keine zusätzlichen Pakete erforderlich.
+| Tag | Ansicht | Felder zum Befüllen |
+| --- | --- | --- |
+| 1 | Brief | `greeting`, `text`, `signature` |
+| 2 | Foto-Erinnerung | `text`, `image.src`, `image.alt`, `image.caption` |
+| 3 | Filmabend-Gutschein | `text`, `voucher.headline`, `voucher.details`, `voucher.note` |
+| 4 | Persönlicher Brief | `greeting`, `text`, `signature` |
+| 5 | Quiz mit drei Fragen | `questions`, `completionText` |
+| 6 | Galerie mit fünf Bildern | `text`, fünf Einträge in `photos` |
 
-```powershell
-npm run preview
-```
+`title` ist jeweils die Überschrift im geöffneten Türchen. Eckige Klammern in den Texten markieren Stellen zum Ersetzen. Für Absätze innerhalb eines JSON-Textes `\n\n` verwenden. Die Nummern `day` von 1 bis 24 beibehalten.
 
-Öffne http://localhost:4173. Der Kalender verwendet das persönlich vereinbarte Passwort. Beim erneuten Bauen dasselbe Passwort eingeben oder bewusst ein neues festlegen.
+### Fotos
 
-Mit http://localhost:4173/?vorschau=1 sind alle Türchen zum Testen verfügbar. Der Passwortschutz gilt weiterhin. Ohne diesen Parameter öffnen sich die Türchen ab ihrem jeweiligen Datum in der Zeitzone Europe/Berlin. Vergangene Türchen bleiben verfügbar.
+Lege Bilder in `private-media/` ab. Unterstützt werden JPG, PNG, GIF und WebP. Trage bei `src` den Dateinamen relativ zu diesem Ordner ein, beispielsweise `erinnerung.jpg` oder `nikolaus/bild-1.jpg`. `alt` beschreibt das Bild, `caption` erscheint darunter. Eine leere Zeichenfolge bei `src` zeigt einen Platzhalter.
 
-## Inhalte und Passwort setzen
+Die Galerie hat genau fünf Bildplätze. Jedes Bild lässt sich einzeln aufdecken und verbergen. Beim Schließen des Türchens werden alle wieder verborgen.
 
-Eine lokale Datei `content.local.json` anlegen. Sie enthält ein Array mit genau 24 Einträgen, jeweils mit `day`, `title` und `text`.
+### Quiz und Gutschein
 
-```json
-{"day":1,"title":"Ein Brief für dich","text":"Liebe Chantal, …"}
-```
+Jede der drei Quizfragen hat eine `question`, eine Liste `answers`, eine `correctAnswer` und eine `explanation`. Die Antworten werden ab null gezählt. Bei drei Antworten steht `0` für die erste, `1` für die zweite und `2` für die dritte. `completionText` erscheint nach der letzten Frage.
 
-Die Datei ist in .gitignore ausgeschlossen. Wenn sie fehlt, erzeugt der Build 24 Platzhalter. Bilder und Gutscheinfunktionen können später ergänzt werden.
+Das Quiz startet bei jedem Öffnen neu. Der Gutschein zeigt deine Konditionen an. Einen Termin oder die Einlösung könnt ihr persönlich vereinbaren.
 
-In PowerShell ein Passwort eingeben und neu bauen.
+## Bauen
+
+Nach Änderungen an Texten oder Bildern den Kalender mit dem vereinbarten Passwort neu bauen. Node.js wird benötigt, zusätzliche Pakete sind nicht erforderlich.
 
 ```powershell
 $secret = Read-Host 'Kalender-Passwort' -AsSecureString
@@ -34,14 +39,28 @@ $env:CALENDAR_PASSWORD = [System.Net.NetworkCredential]::new('', $secret).Passwo
 try { npm run build } finally { Remove-Item Env:CALENDAR_PASSWORD }
 ```
 
-## Veröffentlichung
+Der Build prüft die Inhalte und liest die Bilder ein. Texte und Bilder werden gemeinsam verschlüsselt und in die `index.html` sowie in `dist/` geschrieben. Ungültige Quizantworten, fehlende Bilddateien oder nicht unterstützte Formate brechen den Build mit einer Fehlermeldung ab. Wenn `content.local.json` fehlt, verwendet der Build die Beispieldatei.
 
-Für GitHub Pages ausschließlich den Inhalt von `dist/` als Website veröffentlichen. Alle Pfade sind relativ und funktionieren auch unter einem Repository-Unterpfad. Das Repository und die Veröffentlichung sind noch einzurichten.
+## Lokal ansehen
+
+Die gebaute `index.html` im Projektordner oder in `dist/` lässt sich direkt per Doppelklick öffnen. Für eine lokale Vorschau mit allen freigegebenen Türchen den Server starten.
+
+```powershell
+npm run preview
+```
+
+Öffne http://localhost:4173/?vorschau=1 und gib das vereinbarte Passwort ein. Ohne Vorschauparameter werden die Türchen ab ihrem jeweiligen Datum in der Zeitzone Europe/Berlin freigegeben. Vergangene Türchen bleiben verfügbar.
+
+## GitHub Pages
+
+Das Repository veröffentlicht den Branch `codex/adventskalender` aus dem Stammordner. Nach dem Bauen die aktualisierten Website-Dateien committen und pushen. Die fertige Website steht außerdem in `dist/` zur Verfügung.
+
+`content.local.json` und `private-media/` sind durch `.gitignore` ausgeschlossen. Persönliche Inhalte gehören in diese lokalen Dateien. `content.example.json` wird als öffentliche Vorlage versioniert.
 
 ## Verschlüsselung und Verhalten
 
-Die Texte liegen in der index.html eingebettet und zusätzlich in `dist/calendar.enc.json` mit AES-256-GCM verschlüsselt. PBKDF2-SHA-256 mit 600.000 Iterationen und zufälligem Salt leitet den Schlüssel aus dem Passwort ab. Der Browser hält entschlüsselte Inhalte nur während der geöffneten Sitzung. Nach Neuladen wird das Passwort erneut benötigt.
+Texte und Bilder werden mit AES-256-GCM verschlüsselt. PBKDF2-SHA-256 mit 600.000 Iterationen und zufälligem Salt leitet den Schlüssel aus dem Passwort ab. Nach Neuladen wird das Passwort erneut benötigt.
 
 Die Datumssperre ist eine Komfortfunktion im Browser. Wer das Passwort besitzt, kann alle Inhalte technisch vorzeitig entschlüsseln oder den Vorschauparameter verwenden. Eine manipulationssichere Freigabe nach Datum benötigt einen Server oder tägliche Veröffentlichung.
 
-Geöffnete Türchennummern werden im lokalen Browserspeicher gespeichert. Das funktioniert ohne Konten, wird aber nicht zwischen Geräten synchronisiert. Die Seite lädt keine externen Schriften oder Dienste.
+Geöffnete Türchennummern werden im lokalen Browserspeicher gespeichert. Der Vorschaumodus hat einen eigenen Speicher. Es gibt keine Synchronisierung zwischen Geräten. Quizantworten und aufgedeckte Bilder werden nicht dauerhaft gespeichert.

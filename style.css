@@ -10,3 +10,86 @@ dialog{max-width:480px;width:calc(100% - 32px);padding:48px 36px 32px;border:1px
 @media(max-width:900px){.calendar-grid{grid-template-columns:repeat(4,1fr)}main{padding:0 24px}.masthead{padding:22px 24px}.door{min-height:145px}}
 @media(max-width:560px){.masthead{padding:20px;gap:10px}.brand{font-size:22px}.edition{font-size:.65rem}.text-button{font-size:.8rem;padding:8px 0}.calendar-grid{grid-template-columns:repeat(3,1fr);gap:10px}.door{min-height:130px}.door-number{font-size:34px}.door-state{font-size:.7rem}.calendar-heading{padding:30px 0 20px}.calendar-heading h1{font-size:2.65rem}.calendar-meta{font-size:.75rem}.login{margin-top:35px}main{padding:0 18px}.login .eyebrow{font-size:.65rem}.intro{font-size:.95rem}.desktop-break{display:none}dialog{padding:40px 24px 24px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Persönliche Türchen */
+#door-dialog {
+  max-width: 660px;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+}
+#door-dialog[data-type="gallery"] { max-width: 760px; }
+#door-content:empty { display: none; }
+#door-content { margin-bottom: 28px; }
+#door-content h3 { font: 1.6rem/1.3 Georgia, serif; font-weight: 400; }
+.letter {
+  text-align: left;
+  padding: 28px;
+  border: 1px solid #c7b07b66;
+  border-radius: 6px;
+  background: #f7edda;
+  color: #293c32;
+  font: 1.1rem/1.9 Georgia, serif;
+}
+.letter-greeting { margin-top: 0; font-style: italic; }
+.letter-body, .quiz-completion, .voucher-note { white-space: pre-wrap; }
+.letter-signature { text-align: right; font-style: italic; margin-bottom: 0; }
+.memory-photo { margin: 0; }
+.memory-photo img {
+  display: block;
+  width: 100%;
+  max-height: 60dvh;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #0d2721;
+}
+.memory-photo figcaption { margin-top: 12px; color: var(--muted); font-size: .9rem; line-height: 1.6; }
+.photo-placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 200px;
+  margin: 0;
+  padding: 24px;
+  color: var(--gold);
+  border: 1px dashed var(--line);
+  border-radius: 6px;
+  line-height: 1.8;
+}
+.voucher {
+  border: 1px dashed var(--gold);
+  border-radius: 10px;
+  padding: 28px;
+  background: linear-gradient(145deg, #314b3d, #193a30);
+}
+.voucher h3 { color: #f2d7a1; }
+.voucher-details { text-align: left; line-height: 1.8; padding-left: 24px; }
+.voucher-note { color: var(--muted); font-size: .9rem; line-height: 1.7; }
+.quiz-progress, .gallery-progress { font-size: .9rem; color: var(--gold); }
+.quiz-answers { display: grid; gap: 12px; }
+.answer-button, .secondary-button, .reveal-button {
+  color: var(--ink);
+  background: #25493b;
+  border: 1px solid #af9b6e88;
+  border-radius: 6px;
+  padding: 16px;
+  min-height: 48px;
+  line-height: 1.5;
+}
+.answer-button { text-align: left; }
+.answer-button:hover:enabled, .secondary-button:hover, .reveal-button:hover { background: #355c48; }
+.answer-button:disabled { cursor: default; }
+.selected-answer { outline: 2px solid var(--gold); outline-offset: 2px; }
+.correct-answer { background: #385f42; border-color: #b8d797; }
+.quiz-feedback { color: var(--muted); line-height: 1.8; white-space: pre-wrap; }
+.quiz-feedback:empty { display: none; }
+.quiz .primary { margin-top: 12px; }
+.reveal-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.reveal-card { padding: 12px; border: 1px solid var(--line); border-radius: 8px; min-width: 0; }
+.reveal-card:last-child { grid-column: 1 / -1; }
+.reveal-button { width: 100%; }
+.revealed-photo { margin-top: 12px; }
+.reveal-card .photo-placeholder { min-height: 160px; }
+@media (max-width: 560px) {
+  .letter, .voucher { padding: 20px; }
+  .reveal-gallery { grid-template-columns: 1fr; }
+}
